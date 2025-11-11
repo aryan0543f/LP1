@@ -3,12 +3,13 @@ import java.util.*;
 class Instruction {
     String label, opcode, operand;
     Instruction(String l, String o, String op) {
-        label = l; opcode = o; operand = op;
+        label = l; 
+        opcode = o; 
+        operand = op;
     }
 }
 
 public class TwoPassAssembler {
-
     static Map<String, Integer> symtab = new LinkedHashMap<>();
     static Map<String, Integer> littab = new LinkedHashMap<>();
     static Map<String, String> optab = new HashMap<>();
@@ -35,18 +36,18 @@ public class TwoPassAssembler {
 
         System.out.println("Enter instructions (Label Opcode Operand) - use '-' if not present:");
         for(int i=0; i<n; i++){
-            String[] parts = sc.nextLine().trim().split("\s+");
+            String[] parts = sc.nextLine().trim().split("\\s+");
             code.add(new Instruction(parts[0], parts[1], parts[2]));
         }
 
         pass1(code);
         pass2();
+        sc.close();
     }
 
     static void pass1(List<Instruction> code) {
         int LC = 0;
-        System.out.println("
-=== PASS 1 ===");
+        System.out.println("\n=== PASS 1 ===");
         for(Instruction ins : code){
             if(!ins.label.equals("-"))
                 symtab.put(ins.label, LC);
@@ -67,15 +68,13 @@ public class TwoPassAssembler {
             intermCode.add("(" + ins.opcode + "," + ins.operand + ")");
         }
 
-        System.out.println("
-Symbol Table: " + symtab);
+        System.out.println("\nSymbol Table: " + symtab);
         System.out.println("Literal Table: " + littab);
         System.out.println("Intermediate Code: " + intermCode);
     }
 
     static void pass2() {
-        System.out.println("
-=== PASS 2 ===");
+        System.out.println("\n=== PASS 2 ===");
         for(String line : intermCode){
             for(String sym : symtab.keySet())
                 line = line.replace(sym, symtab.get(sym).toString());
@@ -88,6 +87,13 @@ Symbol Table: " + symtab);
 
 
 /*
+Enter number of lines in assembly program: 5
+Enter instructions (Label Opcode Operand) - use '-' if not present:
+- START 100
+LOOP MOVER A
+- ADD =5
+- MOVEM B
+- END -
 === EXPLANATION ===
 
 What is a Two Pass Assembler?
