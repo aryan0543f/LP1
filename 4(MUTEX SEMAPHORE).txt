@@ -1,3 +1,5 @@
+package synchronization;
+
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -14,7 +16,9 @@ class MutexExample {
                 System.out.println(n + " x " + i + " = " + (n * i));
                 Thread.sleep(400);
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { 
+            e.printStackTrace(); 
+        }
         finally {
             lock.unlock();  // leave critical section
         }
@@ -33,7 +37,9 @@ class SharedPrinter {
                 System.out.println(name + " printing page " + i);
                 Thread.sleep(500);
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { 
+            e.printStackTrace(); 
+        }
         finally {
             System.out.println(name + " releasing printer.");
             sem.release();  // signal()
@@ -50,23 +56,37 @@ public class SynchronizationDemo {
         MutexExample table = new MutexExample();
         Thread t1 = new Thread(() -> table.printTable(5), "T1");
         Thread t2 = new Thread(() -> table.printTable(7), "T2");
-        t1.start(); t2.start();
+        t1.start(); 
+        t2.start();
 
-        try { t1.join(); t2.join(); } catch (Exception e) {}
+        try { 
+            t1.join(); 
+            t2.join(); 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // ---------- Semaphore Demonstration ----------
-        System.out.println("
-=== Semaphore Demonstration ===");
+        System.out.println("\n=== Semaphore Demonstration ===");
         SharedPrinter printer = new SharedPrinter();
 
         Thread p1 = new Thread(() -> printer.printJob("Process-1"));
         Thread p2 = new Thread(() -> printer.printJob("Process-2"));
         Thread p3 = new Thread(() -> printer.printJob("Process-3"));
 
-        p1.start(); p2.start(); p3.start();
+        p1.start(); 
+        p2.start(); 
+        p3.start();
+
+        try {
+            p1.join();
+            p2.join();
+            p3.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
-
 
 
 
@@ -119,3 +139,4 @@ Benefits:
 This demonstration shows how both mechanisms ensure orderly access
 to shared resources, preventing conflicts and maintaining system stability.
 */
+
