@@ -110,3 +110,50 @@ public class TwoPassMacroProcessor {
     }
 }
 
+
+/*
+=== EXPLANATION ===
+
+What is a Two Pass Macro Processor?
+A macro processor that handles macro definitions and expansions in two phases:
+
+PASS 1 (Macro Definition Processing):
+- Scans source code to find macro definitions (MACRO...MEND blocks)
+- Builds MNT (Macro Name Table): Maps macro names to their MDT indices
+- Builds MDT (Macro Definition Table): Stores macro body with parameter placeholders
+- Creates ALA (Argument List Array): Maps formal parameters to positions
+- Replaces formal parameters with placeholders (#1, #2, etc.)
+
+PASS 2 (Macro Expansion):
+- Scans source code again, skipping macro definitions
+- Identifies macro calls by matching with MNT entries
+- For each macro call:
+  * Extracts actual arguments
+  * Retrieves macro definition from MDT
+  * Substitutes placeholders with actual arguments
+  * Adds expanded code to final output
+- Non-macro lines are copied as-is
+
+Key Data Structures:
+1. MNT: Stores macro names and their starting positions in MDT
+2. MDT: Stores macro definitions with parameter placeholders
+3. ALA: Maps parameter names to their positions during Pass 1
+4. Expanded Code: Final output with all macros expanded
+
+Example:
+Input:
+  MACRO
+  ADD_TWO A, B
+  LOAD A
+  ADD B
+  MEND
+  
+  ADD_TWO X, Y
+
+Output:
+  LOAD X
+  ADD Y
+
+This approach separates definition processing from expansion, enabling 
+proper handling of multiple macro definitions and nested macro calls.
+*/
