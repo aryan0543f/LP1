@@ -1,0 +1,69 @@
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.ReentrantLock;
+
+// ---------- Mutex Example ----------
+class MutexExample {
+    private final ReentrantLock lock = new ReentrantLock();
+
+    void printTable(int n) {
+        lock.lock();  // enter critical section
+        try {
+            System.out.println("Thread " + Thread.currentThread().getName() +
+                               " is printing table of " + n);
+            for (int i = 1; i <= 5; i++) {
+                System.out.println(n + " x " + i + " = " + (n * i));
+                Thread.sleep(400);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        finally {
+            lock.unlock();  // leave critical section
+        }
+    }
+}
+
+// ---------- Semaphore Example ----------
+class SharedPrinter {
+    private final Semaphore sem = new Semaphore(1);  // binary semaphore
+
+    void printJob(String name) {
+        try {
+            sem.acquire();  // wait()
+            System.out.println(name + " got access to printer.");
+            for (int i = 1; i <= 3; i++) {
+                System.out.println(name + " printing page " + i);
+                Thread.sleep(500);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        finally {
+            System.out.println(name + " releasing printer.");
+            sem.release();  // signal()
+        }
+    }
+}
+
+// ---------- Main Class ----------
+public class SynchronizationDemo {
+    public static void main(String[] args) {
+
+        // ---------- Mutex Demonstration ----------
+        System.out.println("=== Mutex Demonstration ===");
+        MutexExample table = new MutexExample();
+        Thread t1 = new Thread(() -> table.printTable(5), "T1");
+        Thread t2 = new Thread(() -> table.printTable(7), "T2");
+        t1.start(); t2.start();
+
+        try { t1.join(); t2.join(); } catch (Exception e) {}
+
+        // ---------- Semaphore Demonstration ----------
+        System.out.println("
+=== Semaphore Demonstration ===");
+        SharedPrinter printer = new SharedPrinter();
+
+        Thread p1 = new Thread(() -> printer.printJob("Process-1"));
+        Thread p2 = new Thread(() -> printer.printJob("Process-2"));
+        Thread p3 = new Thread(() -> printer.printJob("Process-3"));
+
+        p1.start(); p2.start(); p3.start();
+    }
+}
+

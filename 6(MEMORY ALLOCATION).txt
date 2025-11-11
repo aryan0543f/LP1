@@ -1,0 +1,191 @@
+import java.util.*;
+
+public class MemoryAllocation {
+
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        int choice;
+        do {
+            System.out.println("
+--- Memory Allocation Strategies ---");
+            System.out.println("1. First Fit");
+            System.out.println("2. Best Fit");
+            System.out.println("3. Worst Fit");
+            System.out.println("4. Next Fit");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            choice = sc.nextInt();
+
+            switch(choice){
+                case 1: firstFit(); break;
+                case 2: bestFit(); break;
+                case 3: worstFit(); break;
+                case 4: nextFit(); break;
+                case 5: System.out.println("Exiting..."); break;
+                default: System.out.println("Invalid Choice!");
+            }
+        } while(choice != 5);
+    }
+
+    // ---------- FIRST FIT ----------
+    static void firstFit() {
+        System.out.print("Enter number of memory blocks: ");
+        int m = sc.nextInt();
+        int[] block = new int[m];
+        System.out.println("Enter size of each block:");
+        for(int i=0; i<m; i++) block[i] = sc.nextInt();
+
+        System.out.print("Enter number of processes: ");
+        int n = sc.nextInt();
+        int[] process = new int[n];
+        System.out.println("Enter size of each process:");
+        for(int i=0; i<n; i++) process[i] = sc.nextInt();
+
+        int[] allocation = new int[n];
+        Arrays.fill(allocation, -1);
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(block[j] >= process[i]){
+                    allocation[i] = j;
+                    block[j] -= process[i];
+                    break;
+                }
+            }
+        }
+
+        System.out.println("
+Process No.	Process Size	Block No.");
+        for(int i=0; i<n; i++){
+            if(allocation[i] != -1)
+                System.out.println((i+1) + "		" + process[i] + "		" + (allocation[i]+1));
+            else
+                System.out.println((i+1) + "		" + process[i] + "		Not Allocated");
+        }
+    }
+
+    // ---------- BEST FIT ----------
+    static void bestFit() {
+        System.out.print("Enter number of memory blocks: ");
+        int m = sc.nextInt();
+        int[] block = new int[m];
+        System.out.println("Enter size of each block:");
+        for(int i=0; i<m; i++) block[i] = sc.nextInt();
+
+        System.out.print("Enter number of processes: ");
+        int n = sc.nextInt();
+        int[] process = new int[n];
+        System.out.println("Enter size of each process:");
+        for(int i=0; i<n; i++) process[i] = sc.nextInt();
+
+        int[] allocation = new int[n];
+        Arrays.fill(allocation, -1);
+
+        for(int i=0; i<n; i++){
+            int bestIdx = -1;
+            for(int j=0; j<m; j++){
+                if(block[j] >= process[i]){
+                    if(bestIdx == -1 || block[j] < block[bestIdx])
+                        bestIdx = j;
+                }
+            }
+            if(bestIdx != -1){
+                allocation[i] = bestIdx;
+                block[bestIdx] -= process[i];
+            }
+        }
+
+        System.out.println("
+Process No.	Process Size	Block No.");
+        for(int i=0; i<n; i++){
+            if(allocation[i] != -1)
+                System.out.println((i+1)+"		"+process[i]+"		"+(allocation[i]+1));
+            else
+                System.out.println((i+1)+"		"+process[i]+"		Not Allocated");
+        }
+    }
+
+    // ---------- WORST FIT ----------
+    static void worstFit() {
+        System.out.print("Enter number of memory blocks: ");
+        int m = sc.nextInt();
+        int[] block = new int[m];
+        System.out.println("Enter size of each block:");
+        for(int i=0; i<m; i++) block[i] = sc.nextInt();
+
+        System.out.print("Enter number of processes: ");
+        int n = sc.nextInt();
+        int[] process = new int[n];
+        System.out.println("Enter size of each process:");
+        for(int i=0; i<n; i++) process[i] = sc.nextInt();
+
+        int[] allocation = new int[n];
+        Arrays.fill(allocation, -1);
+
+        for(int i=0; i<n; i++){
+            int worstIdx = -1;
+            for(int j=0; j<m; j++){
+                if(block[j] >= process[i]){
+                    if(worstIdx == -1 || block[j] > block[worstIdx])
+                        worstIdx = j;
+                }
+            }
+            if(worstIdx != -1){
+                allocation[i] = worstIdx;
+                block[worstIdx] -= process[i];
+            }
+        }
+
+        System.out.println("
+Process No.	Process Size	Block No.");
+        for(int i=0; i<n; i++){
+            if(allocation[i] != -1)
+                System.out.println((i+1)+"		"+process[i]+"		"+(allocation[i]+1));
+            else
+                System.out.println((i+1)+"		"+process[i]+"		Not Allocated");
+        }
+    }
+
+    // ---------- NEXT FIT ----------
+    static void nextFit() {
+        System.out.print("Enter number of memory blocks: ");
+        int m = sc.nextInt();
+        int[] block = new int[m];
+        System.out.println("Enter size of each block:");
+        for(int i=0; i<m; i++) block[i] = sc.nextInt();
+
+        System.out.print("Enter number of processes: ");
+        int n = sc.nextInt();
+        int[] process = new int[n];
+        System.out.println("Enter size of each process:");
+        for(int i=0; i<n; i++) process[i] = sc.nextInt();
+
+        int[] allocation = new int[n];
+        Arrays.fill(allocation, -1);
+
+        int last = 0;
+        for(int i=0; i<n; i++){
+            int j = last;
+            do {
+                if(block[j] >= process[i]){
+                    allocation[i] = j;
+                    block[j] -= process[i];
+                    last = j;
+                    break;
+                }
+                j = (j + 1) % m;
+            } while(j != last);
+        }
+
+        System.out.println("
+Process No.	Process Size	Block No.");
+        for(int i=0; i<n; i++){
+            if(allocation[i] != -1)
+                System.out.println((i+1)+"		"+process[i]+"		"+(allocation[i]+1));
+            else
+                System.out.println((i+1)+"		"+process[i]+"		Not Allocated");
+        }
+    }
+}
+
