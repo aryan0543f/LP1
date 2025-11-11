@@ -219,6 +219,13 @@ public class Memoryallocations {
 
 
 /*
+Enter your choice: 1
+Enter number of memory blocks: 4
+Enter size of each block:
+100 500 200 300
+Enter number of processes: 3
+Enter size of each process:
+212 417 112
 === EXPLANATION ===
 
 What are Memory Allocation Strategies?
@@ -284,4 +291,5 @@ This implementation shows how different strategies handle the same
 memory allocation requests, demonstrating their trade-offs in
 speed, fragmentation, and memory utilization efficiency.
 */
+
 
