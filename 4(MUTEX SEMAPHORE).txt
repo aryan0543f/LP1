@@ -1,4 +1,4 @@
-package synchronization;
+
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
@@ -139,4 +139,5 @@ Benefits:
 This demonstration shows how both mechanisms ensure orderly access
 to shared resources, preventing conflicts and maintaining system stability.
 */
+
 
