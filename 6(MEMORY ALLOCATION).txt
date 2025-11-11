@@ -189,3 +189,70 @@ Process No.	Process Size	Block No.");
     }
 }
 
+
+/*
+=== EXPLANATION ===
+
+What are Memory Allocation Strategies?
+Algorithms used by operating systems to allocate memory blocks to processes
+in the most efficient way, minimizing fragmentation and maximizing utilization.
+
+🎯 FIRST FIT:
+- Searches memory blocks from beginning
+- Allocates the FIRST block that can fit the process
+- Fast allocation (O(n) time complexity)
+- Can cause fragmentation at the beginning of memory
+- Most commonly used due to simplicity
+
+🏆 BEST FIT:
+- Searches ALL memory blocks
+- Allocates the SMALLEST block that can fit the process
+- Minimizes wasted space per allocation
+- Slower than First Fit (must check all blocks)
+- Can create many small unusable fragments
+
+📈 WORST FIT:
+- Searches ALL memory blocks  
+- Allocates the LARGEST block that can fit the process
+- Leaves larger remaining fragments
+- Slower allocation process
+- May waste memory but reduces small fragments
+
+🔄 NEXT FIT:
+- Similar to First Fit but starts from last allocated position
+- Uses circular search pattern
+- Faster than First Fit in some cases
+- Distributes allocations more evenly
+- Can cause fragmentation at end of memory
+
+COMPARISON TABLE:
+┌─────────────┬─────────────┬─────────────┬─────────────┐
+│ Algorithm   │ Search Time │ Fragmentation│ Best For    │
+├─────────────┼─────────────┼─────────────┼─────────────┤
+│ First Fit   │ Fast        │ Beginning   │ General use │
+│ Best Fit    │ Slow        │ Small holes │ Memory save │
+│ Worst Fit   │ Slow        │ Large holes │ Future alloc│
+│ Next Fit    │ Medium      │ Distributed │ Even spread │
+└─────────────┴─────────────┴─────────────┴─────────────┘
+
+KEY CONCEPTS:
+- Internal Fragmentation: Wasted space within allocated blocks
+- External Fragmentation: Free space too small for any process
+- Compaction: Moving allocated blocks to reduce fragmentation
+
+ADVANTAGES & DISADVANTAGES:
+✅ First Fit: Fast, simple | ❌ Fragmentation at start
+✅ Best Fit: Minimal waste | ❌ Slow, creates tiny fragments  
+✅ Worst Fit: Large fragments | ❌ Memory wastage
+✅ Next Fit: Even distribution | ❌ Circular overhead
+
+REAL-WORLD USAGE:
+- First Fit: Most operating systems (Linux, Windows)
+- Best Fit: Embedded systems with limited memory
+- Worst Fit: Systems expecting large future allocations
+- Next Fit: Load balancing across memory regions
+
+This implementation shows how different strategies handle the same
+memory allocation requests, demonstrating their trade-offs in
+speed, fragmentation, and memory utilization efficiency.
+*/
