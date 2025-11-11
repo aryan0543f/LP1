@@ -2,9 +2,11 @@
 
 
 
+package synchronization;
+
 import java.util.*;
 
-public class FIFO{
+public class FIFO {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
@@ -12,7 +14,8 @@ public class FIFO{
         int n = sc.nextInt();
         int pages[] = new int[n];
         System.out.println("Enter reference string:");
-        for (int i = 0; i < n; i++) pages[i] = sc.nextInt();
+        for (int i = 0; i < n; i++) 
+            pages[i] = sc.nextInt();
 
         System.out.print("Enter frame capacity: ");
         int cap = sc.nextInt();
@@ -21,9 +24,11 @@ public class FIFO{
 
         int index = 0, hit = 0, fault = 0;
 
-        System.out.println("\nPage\tFrame\t\tStatus");
+        System.out.println("\nPage\tFrames\t\tStatus");
+        System.out.println("----\t------\t\t------");
+        
         for (int i = 0; i < n; i++) {
-            boolean found = false;																					
+            boolean found = false;
 
             // Check for hit
             for (int j = 0; j < cap; j++) {
@@ -37,11 +42,11 @@ public class FIFO{
             // If not found => page fault
             if (!found) {
                 frame[index] = pages[i];
-                index = (index + 1) % cap;
+                index = (index + 1) % cap;  // Circular replacement
                 fault++;
             }
 
-            // Print status
+            // Print current status
             System.out.print(pages[i] + "\t");
             for (int j = 0; j < cap; j++) {
                 if (frame[j] == -1)
@@ -49,10 +54,11 @@ public class FIFO{
                 else
                     System.out.print(frame[j] + " ");
             }
-            System.out.println("\t" + (found ? "Hit" : "Fault"));
+            System.out.println("\t\t" + (found ? "Hit" : "Fault"));
         }
 
-        System.out.println("\nTotal Hits: " + hit);
+        System.out.println("\n=== RESULTS ===");
+        System.out.println("Total Hits: " + hit);
         System.out.println("Total Faults: " + fault);
         System.out.printf("Hit Ratio: %.2f%%\n", (hit * 100.0 / n));
         System.out.printf("Fault Ratio: %.2f%%\n", (fault * 100.0 / n));
@@ -62,48 +68,94 @@ public class FIFO{
 }
 
 
-
 -------------------------OPTIMAL PAGE REPLACEMENT------------------------------
 
 
 
 import java.util.*;
 
-public class OptimalPageReplacement {
+public class OptimalPageReplacementAlgorithm {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Pages: ");
+        
+        System.out.print("Enter number of pages: ");
         int n = sc.nextInt();
         int pages[] = new int[n];
-        for (int i = 0; i < n; i++) pages[i] = sc.nextInt();
+        System.out.println("Enter reference string:");
+        for (int i = 0; i < n; i++) 
+            pages[i] = sc.nextInt();
 
-        System.out.print("Frames: ");
-        int f = sc.nextInt(), frame[] = new int[f];
+        System.out.print("Enter number of frames: ");
+        int f = sc.nextInt();
+        int frame[] = new int[f];
         Arrays.fill(frame, -1);
+        
         int hit = 0, fault = 0;
 
-        System.out.println("\nPg\tFrames\tStatus");
+        System.out.println("\nPage\tFrames\t\tStatus");
+        System.out.println("----\t------\t\t------");
+        
         for (int i = 0; i < n; i++) {
-            int p = pages[i], pos = -1;
-            for (int j = 0; j < f; j++) if (frame[j] == p) pos = j;
+            int p = pages[i];
+            int pos = -1;
+            
+            // Check if page already exists
+            for (int j = 0; j < f; j++) 
+                if (frame[j] == p) 
+                    pos = j;
 
-            if (pos == -1) { // page fault
+            if (pos == -1) { // Page fault
                 fault++;
-                int rep = -1, far = -1;
+                int replaceIndex = -1;
+                int farthest = -1;
+                
+                // Find empty frame first
                 for (int j = 0; j < f; j++) {
-                    if (frame[j] == -1) { rep = j; break; }
-                    int k;
-                    for (k = i + 1; k < n; k++) if (frame[j] == pages[k]) break;
-                    if (k > far) { far = k; rep = j; }
+                    if (frame[j] == -1) { 
+                        replaceIndex = j; 
+                        break; 
+                    }
                 }
-                frame[rep] = p;
-            } else hit++;
+                
+                // If no empty frame, find optimal replacement
+                if (replaceIndex == -1) {
+                    for (int j = 0; j < f; j++) {
+                        int k;
+                        // Find when this frame's page will be used next
+                        for (k = i + 1; k < n; k++) 
+                            if (frame[j] == pages[k]) 
+                                break;
+                        
+                        // If this page is used farthest in future (or never)
+                        if (k > farthest) { 
+                            farthest = k; 
+                            replaceIndex = j; 
+                        }
+                    }
+                }
+                
+                frame[replaceIndex] = p;
+            } else {
+                hit++;
+            }
 
+            // Print current status
             System.out.print(p + "\t");
-            for (int j = 0; j < f; j++) System.out.print((frame[j] == -1 ? "- " : frame[j] + " "));
-            System.out.println("\t" + (pos == -1 ? "F" : "H"));
+            for (int j = 0; j < f; j++) {
+                if (frame[j] == -1)
+                    System.out.print("- ");
+                else
+                    System.out.print(frame[j] + " ");
+            }
+            System.out.println("\t\t" + (pos == -1 ? "Fault" : "Hit"));
         }
-        System.out.printf("\nHits=%d Faults=%d\nHit Ratio=%.2f%%\n", hit, fault, hit * 100.0 / n);
+        
+        System.out.println("\n=== RESULTS ===");
+        System.out.println("Total Hits: " + hit);
+        System.out.println("Total Faults: " + fault);
+        System.out.printf("Hit Ratio: %.2f%%\n", (hit * 100.0 / n));
+        System.out.printf("Fault Ratio: %.2f%%\n", (fault * 100.0 / n));
+        
         sc.close();
     }
 }
@@ -117,7 +169,7 @@ public class OptimalPageReplacement {
 
 import java.util.*;
 
-public class LRU{
+public class LRUPageReplacement {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
@@ -125,15 +177,20 @@ public class LRU{
         int n = sc.nextInt();
         int pages[] = new int[n];
         System.out.println("Enter reference string:");
-        for (int i = 0; i < n; i++) pages[i] = sc.nextInt();
+        for (int i = 0; i < n; i++) 
+            pages[i] = sc.nextInt();
 
         System.out.print("Enter frame capacity: ");
         int f = sc.nextInt();
         int frame[] = new int[f];
         Arrays.fill(frame, -1);
+        
         int hit = 0, fault = 0;
 
-        System.out.println("\nPg\tFrames\tStatus");
+        System.out.println("\nPage\tFrames\t\tStatus");
+        System.out.println("----\t------\t\t------");
+        
+        // Track recent usage order
         ArrayList<Integer> recent = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
@@ -141,43 +198,72 @@ public class LRU{
             boolean found = false;
 
             // Check for hit
-            for (int j = 0; j < f; j++)
-                if (frame[j] == p) { found = true; hit++; break; }
+            for (int j = 0; j < f; j++) {
+                if (frame[j] == p) { 
+                    found = true; 
+                    hit++; 
+                    break; 
+                }
+            }
 
-            // If not found => fault
+            // If not found => page fault
             if (!found) {
                 fault++;
-                int rep = -1;
-                for (int j = 0; j < f; j++)
-                    if (frame[j] == -1) { rep = j; break; }
-
-                // If all full → remove least recently used
-                if (rep == -1) {
-                    int lru = recent.get(0);
-                    for (int j = 0; j < f; j++)
-                        if (frame[j] == lru) { rep = j; break; }
-                    recent.remove(0);
+                int replaceIndex = -1;
+                
+                // Find empty frame first
+                for (int j = 0; j < f; j++) {
+                    if (frame[j] == -1) { 
+                        replaceIndex = j; 
+                        break; 
+                    }
                 }
-                frame[rep] = p;
+
+                // If no empty frame → remove least recently used
+                if (replaceIndex == -1) {
+                    int lruPage = recent.get(0);  // First in list = LRU
+                    for (int j = 0; j < f; j++) {
+                        if (frame[j] == lruPage) { 
+                            replaceIndex = j; 
+                            break; 
+                        }
+                    }
+                    recent.remove(0);  // Remove LRU from tracking
+                }
+                
+                frame[replaceIndex] = p;
             }
 
             // Update recent usage (most recent at end)
-            recent.remove((Integer)p);
-            recent.add(p);
+            recent.remove((Integer)p);  // Remove if already exists
+            recent.add(p);              // Add to end (most recent)
 
-            // Print frame status
+            // Print current status
             System.out.print(p + "\t");
-            for (int j = 0; j < f; j++)
-                System.out.print((frame[j] == -1 ? "- " : frame[j] + " "));
-            System.out.println("\t" + (found ? "H" : "F"));
+            for (int j = 0; j < f; j++) {
+                if (frame[j] == -1)
+                    System.out.print("- ");
+                else
+                    System.out.print(frame[j] + " ");
+            }
+            System.out.println("\t\t" + (found ? "Hit" : "Fault"));
         }
 
-        System.out.printf("\nHits=%d Faults=%d\nHit Ratio=%.2f%%\n",
-                hit, fault, hit * 100.0 / n);
+        System.out.println("\n=== RESULTS ===");
+        System.out.println("Total Hits: " + hit);
+        System.out.println("Total Faults: " + fault);
+        System.out.printf("Hit Ratio: %.2f%%\n", (hit * 100.0 / n));
+        System.out.printf("Fault Ratio: %.2f%%\n", (fault * 100.0 / n));
+        
         sc.close();
     }
 }
 /*
+
+Enter number of pages: 12
+Enter reference string:
+7 0 1 2 0 3 0 4 2 3 0 3
+Enter frame capacity: 3
 === EXPLANATION ===
 
 What are Page Replacement Algorithms?
@@ -246,3 +332,4 @@ This implementation demonstrates how different algorithms handle
 the same page reference string, showing their impact on system
 performance through hit/fault ratios and memory utilization.
 */
+
