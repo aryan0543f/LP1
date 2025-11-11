@@ -129,6 +129,15 @@ public class TwoPassMacroProcessor {
 }
 
 /*
+
+Enter number of source lines: 6
+Enter source program:
+MACRO
+ADD_TWO A,B
+LOAD A
+ADD B
+MEND
+ADD_TWO X,Y
 === EXPLANATION ===
 
 What is a Two Pass Macro Processor?
@@ -174,4 +183,5 @@ Output:
 This approach separates definition processing from expansion, enabling 
 proper handling of multiple macro definitions and nested macro calls.
 */
+
 
