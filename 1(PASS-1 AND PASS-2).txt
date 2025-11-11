@@ -85,3 +85,37 @@ Symbol Table: " + symtab);
         }
     }
 }
+
+
+/*
+=== EXPLANATION ===
+
+What is a Two Pass Assembler?
+A Two Pass Assembler converts assembly language code to machine code in two phases:
+
+PASS 1 (Symbol Resolution):
+- Scans the entire program once
+- Creates Symbol Table: Maps labels to their memory addresses
+- Creates Literal Table: Maps literals (=5, =10) to their addresses
+- Maintains Location Counter (LC) to track memory addresses
+- Generates intermediate code for Pass 2
+
+PASS 2 (Code Generation):
+- Uses tables created in Pass 1
+- Replaces all symbols and literals with their actual addresses
+- Generates final machine code
+
+Key Components:
+1. Symbol Table (symtab): Stores label names and their memory addresses
+2. Literal Table (littab): Stores literal values and their addresses
+3. Operation Table (optab): Maps instruction names to machine codes
+4. Location Counter (LC): Tracks current memory address
+
+Example Flow:
+Input: LOOP ADD A, =5
+Pass 1: Creates entry for LOOP in symbol table, =5 in literal table
+Pass 2: Replaces LOOP with address, =5 with its address
+
+This approach handles forward references (labels used before definition) 
+by completing symbol resolution in Pass 1 before code generation in Pass 2.
+*/
